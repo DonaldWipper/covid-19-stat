@@ -23,7 +23,7 @@ PyMySQL==0.8.0
 pyparsing==2.0.3
 pytz==2018.3
 pyxdg==0.25
-requests==2.18.4
+requests==2.20.0
 robobrowser==0.5.3
 scipy==1.0.0
 six==1.11.0
