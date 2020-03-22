@@ -20,41 +20,51 @@ from cubes.server.utils import str_to_bool
 from cubes.server.blueprint import slicer
 import io
 import configparser
-# Set the configuration file
-try:
-    CONFIG_PATH = os.environ["SLICER_CONFIG"]
-except KeyError:
-    CONFIG_PATH = os.path.join(os.getcwd(), "slicer.ini")
+import os.path
 
-#счатаем параметр в
-def create_server_(config=None, **_options):
-    # Load extensions
-    if config.has_option("server", "modules"):
-        modules = shlex.split(config.get("server", "modules"))
-        for module in modules:
-            e = __import__(module)
-
-    app = Flask(__name__.rsplit('.', 1)[0])
-    app.register_blueprint(slicer, config=config, url_prefix='/api', **_options)
-    return app    
-
-def read_config_local(config_path):
+#счатаем параметр 
+def read_config_local(config_path, path=""):
     env = Env()
-    # Read .env into os.environ
     env.read_env()
     fin = open(config_path, "r")
-    x = fin.read().format(DB_CONN_STR =env.str("DB_CONN_STR")) 
+    x = fin.read().format(DB_CONN_STR =env.str("DB_CONN_STR"), MODEL_PATH=path + env.str("MODEL_PATH")) 
     fin.close()
     buf = io.StringIO(x)
     config = configparser.ConfigParser()
     config.read_file(buf)
     return config
 
+def create_server_(config=None, **_options):
+    # Load extensions
+    print(config)
+    app = Flask(__name__)
+    app.register_blueprint(slicer, config=config, url_prefix='/api', **_options)
+    return app    
+
+
+
+# Set the configuration file
+try:
+    CONFIG_PATH = os.environ["SLICER_CONFIG"]
+except KeyError:
+    try:
+        CONFIG_PATH = os.path.join(os.getcwd(), "slicer.ini")
+        path = os.getcwd()
+        config = read_config_local(CONFIG_PATH, path)   
+
+    except:
+        CONFIG_PATH = os.path.join(os.getcwd() + '/FlaskApp/', "slicer.ini")
+        path = os.getcwd() + '/FlaskApp/'
+        config = read_config_local(CONFIG_PATH, path) 
+         
+
+
+
 
     
 #app.config.from_object(__name__)
 #config = read_slicer_config(CONFIG_PATH)
-config = read_config_local(CONFIG_PATH)                          
+#config = read_config_local(CONFIG_PATH)                          
 app = create_server_(config)
 app.config['TEMPLATES_AUTO_RELOAD']=True
 debug = os.environ.get("SLICER_DEBUG")
