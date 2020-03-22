@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
+<head>
+
+    <title>CubesViewer Studio (Local)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/png" href="img/favicon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="img/favicon/favicon-194x194.png" sizes="194x194">
+    <link rel="icon" type="image/png" href="img/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="shortcut icon" href="img/favicon/favicon.ico">
+    
+
+    <link rel="stylesheet" href="{{url_for('static', filename='lib/angular-ui-grid/ui-grid.css') }}" />
+    <link rel="stylesheet" href="{{url_for('static', filename='lib/font-awesome/css/font-awesome.css') }}" />
+    <link rel="stylesheet" href="{{url_for('static', filename='lib/nvd3/nv.d3.css') }}" />
+    <link rel="stylesheet" href="{{url_for('static', filename='dist/cubesviewer.css') }}" />
+    <link rel="stylesheet" href="{{url_for('static', filename='lib/bootstrap-submenu/css/bootstrap-submenu.css') }}" />
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/cvapp.css') }}" />
+
+    <script src="{{url_for('static', filename='lib/jquery/jquery.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/bootstrap/bootstrap.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/bootstrap-submenu/js/bootstrap-submenu.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/angular/angular.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/angular-cookies/angular-cookies.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/angular-bootstrap/ui-bootstrap-tpls.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/angular-ui-grid/ui-grid.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/d3/d3.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/nvd3/nv.d3.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/flotr2/flotr2.min.js') }}"></script>
+    <script src="{{url_for('static', filename='lib/masonry/masonry.pkgd.min.js') }}"></script>
+    <script src="{{url_for('static', filename='dist/cubesviewer.js') }}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+    
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+    // Initialize CubesViewer when document is ready
+    $(document).ready(function() {
+
+    	var cubesUrl = "api/";
+        //var cubesUrl = "http://localhost:5000";
+
+        cubesviewerStudio.init({
+        	cubesUrl: cubesUrl,
+            container: $('#cubesviewer').get(0),
+            debug: true
+        });
+        
+    
+        var sort_areas = {
+          "mode": "explore",
+          "drilldown": [
+            "country"
+          ],
+          "cuts": [],
+          "datefilters": [],
+          "columnHide": {
+            "Новый случаев_": true,
+            "Вылечилось новых_": true,
+            "Новых умерло_": true
+          },
+          "columnWidths": {
+            "Вылечилось(всего)_": 249,
+            "Случаев(всего)_": 229,
+            "Умерло(всего)_": 222
+          },
+          "columnSort": {
+            "explore": {
+              "Новый случаев_": {
+                "direction": "desc",
+                "priority": 1
+              }
+            }
+          },
+          "cubename": "epidemic_country_data",
+          "name": "Most infected countries"
+        }
+
+        cubesviewer.apply(function() {
+            var serialized = JSON.stringify(sort_areas);
+            var view1 = cubesviewerStudio.studioViewsService.addViewObject(serialized);
+            cubesviewerStudio.studioViewsService.studioScope.toggleTwoColumn();
+            cubesviewerStudio.studioViewsService.studioScope.toggleHideControls();
+
+      });
+    
+    
+        
+    });
+
+</script>
+
+<div>
+
+    <div class="header">
+        <div style="float: left;">
+            <img class="cv-logo" title="Coronovirus cube statistics" src="{{url_for('static', filename='png/covid-19.png') }}" />
+        </div>
+
+        <h1 style="font-family:Open+Sans;color:red;font-size:4em font-weight:bolder">Coronovirus cube statistics</h1>
+       
+    </div>
+
+    <div style="clear: both;"></div>
+
+
+    <!-- Cubes Viewer container -->
+    <div id="cubesviewer">
+    </div>
+
+
+    <div class="footer" style="clear: both; padding-top: 20px;">
+    	<div style="height: 1px; border-top: 1px solid #DDDDDD; padding-top: 4px;"></div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

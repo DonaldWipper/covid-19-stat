@@ -1,0 +1,10 @@
+.idea/
+.ipynb_checkpoints/
+.DS_Store
+__pycache__/
+test.*
+build/
+*.egg*
+venv/
+.env
+.env.*

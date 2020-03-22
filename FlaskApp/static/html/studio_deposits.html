@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
+<head>
+
+    <title>CubesViewer Studio (Local)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/png" href="img/favicon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="img/favicon/favicon-194x194.png" sizes="194x194">
+    <link rel="icon" type="image/png" href="img/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="shortcut icon" href="img/favicon/favicon.ico">
+
+
+    <link rel="stylesheet" href="lib/angular-ui-grid/ui-grid.css" />
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="lib/nvd3/nv.d3.css" />
+    <link rel="stylesheet" href="../dist/cubesviewer.css" />
+    <link rel="stylesheet" href="lib/bootstrap-submenu/css/bootstrap-submenu.css" /> <!-- after cubesviewer.css! -->
+
+    <link rel="stylesheet" href="cvapp.css" />
+
+    <script src="lib/jquery/jquery.js"></script>
+    <script src="lib/bootstrap/bootstrap.js"></script>
+    <script src="lib/bootstrap-submenu/js/bootstrap-submenu.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-cookies/angular-cookies.js"></script>
+    <script src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="lib/angular-ui-grid/ui-grid.js"></script>
+    <script src="lib/d3/d3.js"></script>
+    <script src="lib/nvd3/nv.d3.js"></script>
+    <script src="lib/flotr2/flotr2.min.js"></script>
+    <script src="lib/masonry/masonry.pkgd.min.js"></script>  <!-- needed for CubesViewer Studio only, not embedded views -->
+    <script src="../dist/cubesviewer.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+    
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+    // Initialize CubesViewer when document is ready
+    $(document).ready(function() {
+
+    	var cubesUrl = prompt ("Enter your Cubes Server URL\n(or try http://cubesdemo.cubesviewer.com)", "http://localhost:5000");
+        //var cubesUrl = "http://localhost:8000/";
+
+        cubesviewerStudio.init({
+        	cubesUrl: cubesUrl,
+            container: $('#cubesviewer').get(0),
+            debug: true
+        });
+        
+       
+        var view_difference = {
+                          "cubename": "deposit_stat_aggregated",
+                          "name": "Прирост депозитов",
+                          "mode": "chart",
+                          "cuts": [{"dimension":"type@default", "value":"difference;credit;debit"}], 
+                          "drilldown":["type"],
+                          "datefilters": [],
+                          "rangefilters": [],
+                          "xaxis": "date_balance@by_date:day",
+                          "yaxis": "метрики",
+                          "charttype": "lines",
+                          "columnHide": {},
+                          "columnWidths": {},
+                          "columnSort":{"chart":{"date_balance@by_date:day":{"direction":"asc","priority":0}}},
+                          "chart-barsvertical-stacked": true,
+                          "chart-disabledseries": {}
+                        }
+        /*
+         serialized = '{"cubename":"webshop_sales","name":"Product sales quarterly filtered","mode":"series","drilldown":["product:product_product"],"cuts":[{"dimension":"country@contcountry","value":"europe;north_america;south_america"}],"datefilters":[{"dimension":"date_sale@daily","mode":"auto-last24m","date_from":"","date_to":""}],"rangefilters":[],"xaxis":"date_sale@daily:quarter","yaxis":"price_total_sum","charttype":"lines-stacked","columnHide":{},"columnWidths":{},"columnSort":{},"chart-barsvertical-stacked":true,"chart-disabledseries":{"key":"product:product_category","disabled":{"Books":false,"Sports":false,"Various":false,"Videos":false}}}';
+        */
+     
+         var view_currency_balance = {
+                          "cubename": "deposit_stat",
+                          "name": "Баланс с разбиением на валюты",
+                          "mode": "chart",
+                          "drilldown":["currency_id"],
+                          "cuts": [{"dimension":"date_balance@by_date", "value":"2019,11,4"}],
+                          "datefilters": [],
+                          "rangefilters": [],
+                          "yaxis": ["баланс на конец дня"],
+                          "charttype": "pie",
+                          "columnHide": {},
+                          "columnWidths": {},
+                          "columnSort": {},
+                          "chart-disabledseries": {}
+                        }
+         var view_avg_percent_balance_areas = {
+                          "cubename": "deposit_stat",
+                          "name": "Cредневзвешанный процент по балансу",
+                          "mode": "chart",
+                          "drilldown":["term"],
+                          "cuts": [],
+                          "datefilters": [],
+                          "rangefilters": [],
+                          "xaxis":"date_balance@by_date:day",
+                          "yaxis": "средневзвешанный процент",
+                          "charttype": "lines-stacked",
+                          "columnHide": {},
+                          "columnWidths": {},
+                          "columnSort": {},
+                          "chart-barsvertical-stacked": true,
+                          "chart-disabledseries": {}
+                        }
+         
+         var view_clients_areas = {
+                          "cubename": "deposit_stat",
+                          "name": "Кол-во клиентов по дням",
+                          "mode": "chart",
+                          "cuts": [],
+                          "datefilters": [],
+                          "rangefilters": [],
+                          "xaxis":"date_balance@by_date:day",
+                          "yaxis": "кол-во клиентов",
+                          "charttype": "lines",
+                          "columnHide": {},
+                          "columnWidths": {},
+                          "columnSort": {},
+                          "chart-barsvertical-stacked": true,
+                          "chart-disabledseries": {}
+                        }
+         
+         var view_interest_rate_areas = {
+                          "cubename": "deposit_stat",
+                          "name": "Кол-во клиентов по дням",
+                          "mode": "chart",
+                          "drilldown":["interest_rate"],
+                          "cuts": [],
+                          "datefilters": [],
+                          "rangefilters": [],
+                          "xaxis":"date_balance@by_date:day",
+                          "yaxis": "баланс на конец дня",
+                          "charttype": "lines-stacked",
+                          "columnHide": {},
+                          "columnWidths": {},
+                          "columnSort": {},
+                          "chart-barsvertical-stacked": true,
+                          "chart-disabledseries": {}
+                        }
+         
+
+
+         cubesviewer.apply(function() {
+             var serialized = null;
+           
+            
+            serialized = JSON.stringify(view_difference);
+            serialized2 = JSON.stringify(view_currency_balance); 
+            serialized3 = JSON.stringify(view_avg_percent_balance_areas);  
+           
+            var view1 = cubesviewerStudio.studioViewsService.addViewObject(serialized);
+            //var view2 = cubesviewerStudio.studioViewsService.addViewObject(serialized2);
+            //var view3 = cubesviewerStudio.studioViewsService.addViewObject(serialized3);  
+            //var view3 = cubesviewerStudio.studioViewsService.addViewObject(serialized3); 
+            //var view4 = cubesviewerStudio.studioViewsService.addViewObject(serialized4); 
+            //var view5 = cubesviewerStudio.studioViewsService.addViewObject(serialized5);  
+            //var view6 = cubesviewerStudio.studioViewsService.addViewObject(serialized6);  
+            cubesviewerStudio.studioViewsService.studioScope.toggleTwoColumn();
+            cubesviewerStudio.studioViewsService.studioScope.toggleHideControls();
+
+      });
+    
+    
+
+        
+        //console.log(studioViewsService.studioViewsService)
+        console.log(document.getElementById('cubesviewer').getElementsByClassName("cv-bootstrap ng-scope"))
+        //angular.element(document.getElementById('#CubesViewerStudioController')).scope().get();
+        //console.log(Object.keys( cubesviewerStudio));
+        //console.log(cubesviewerStudio.cubesService)
+        //cubesviewerStudio.studioViewsService.addViewCube('players_stat')
+    });
+
+</script>
+
+<div>
+
+    <div class="header">
+        <div style="float: left;">
+            <img class="cv-logo" title="CubesViewer" src="img/rocket.jpg" />
+        </div>
+
+        <h1>Дашборд по депозитам</h1>
+       
+    </div>
+
+    <div style="clear: both;"></div>
+
+
+    <!-- Cubes Viewer container -->
+    <div id="cubesviewer">
+    </div>
+
+
+    <div class="footer" style="clear: both; padding-top: 20px;">
+    	<div style="height: 1px; border-top: 1px solid #DDDDDD; padding-top: 4px;"></div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

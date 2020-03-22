@@ -1,0 +1,188 @@
+{
+  "dimensions": [
+    {
+      "name": "country",
+      "label": "Страна"
+    },
+    {
+      "name": "alpha_2",
+      "label": "alpha_2"
+    },
+    {
+      "name": "alpha_3",
+      "label": "alpha_3"
+    },
+    {
+      "name": "url",
+      "label": "url"
+    },
+    {
+      "comment": "This is used as a template for other date dimensions.",
+      "name": "date",
+      "label": "День баланса",
+      "role": "time",
+      "levels": [
+        {
+          "name": "year",
+          "label": "Year",
+          "role": "year",
+          "attributes": [
+            {
+              "name": "year",
+              "order": "asc"
+            }
+          ]
+        },
+        {
+          "name": "month",
+          "label": "Month",
+          "role": "month",
+          "attributes": [
+            {
+              "name": "month",
+              "order": "asc"
+            }
+          ]
+        },
+        {
+          "name": "day",
+          "label": "Day",
+          "role": "day",
+          "attributes": [
+            {
+              "name": "day"
+            }
+          ]
+        }
+      ],
+      "hierarchies": [
+        {
+          "name": "by_date",
+          "label": "Daily",
+          "levels": [
+            "year",
+            "month",
+            "day"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "date_balance",
+      "label": "группировка даты",
+      "role": "time",
+      "template": "date"
+    }
+  ],
+  "cubes": [
+    {
+      "name": "epidemic_country_data",
+      "dimensions": [
+        "country",
+        "alpha_2",
+        "alpha_3",
+        "url",
+        "date_balance"
+      ],
+      "measures": [
+        {
+          "name": "casetotal",
+          "label": "Случаев(всего)"
+        },
+        {
+          "name": "newcase",
+          "label": "Новый случаев"
+        },
+        {
+          "name": "curecase",
+          "label": "Вылечилось(всего)"
+        },
+        {
+          "name": "deathcase",
+          "label": "Умерло(всего)"
+        },
+        {
+          "name": "newcure",
+          "label": "Новых вылечилось"
+        },
+        {
+          "name": "newdeath",
+          "label": "Новых умерло"
+        }
+      ],
+      "aggregates": [
+        {
+          "name": "Случаев(всего)_",
+          "function": "max",
+          "measure": "casetotal"
+        },
+        {
+          "name": "Умерло(всего)_",
+          "function": "max",
+          "measure": "deathcase"
+        },  
+        {
+          "name": "Новый случаев_",
+          "function": "sum",
+          "measure": "newcase"
+        },
+        {
+          "name": "Вылечилось(всего)_",
+          "function": "max",
+          "measure": "curecase"
+        },
+        {
+          "name": "Вылечилось новых_",
+          "function": "sum",
+          "measure": "newcure"
+        },
+        {
+          "name": "Новых умерло_",
+          "function": "sum",
+          "measure": "newdeath"
+        }
+      ],
+      "joins": [
+        {
+          "master": "epidemic_country_data.day",
+          "detail": {
+            "table": "dates",
+            "column": "day"
+          }
+        },
+        {
+          "master": "epidemic_country_data.id_country",
+          "detail": {
+            "table": "countries",
+            "column": "id"
+          }
+        }
+      ],
+      "mappings": {
+        "date_balance.day": {
+          "table": "dates",
+          "column": "date_day"
+        },
+        "date_balance.year": {
+          "table": "dates",
+          "column": "date_year"
+        },
+        "date_balance.quarter": {
+          "table": "dates",
+          "column": "date_quarter"
+        },
+        "date_balance.month": {
+          "table": "dates",
+          "column": "date_month"
+        },
+        "date_balance.week": {
+          "table": "dates",
+          "column": "date_week"
+        },
+        "url": "countries.url",
+        "alpha_2": "countries.alpha_2",  
+        "alpha_3": "countries.alpha_3"    
+      }
+    }
+  ]
+}

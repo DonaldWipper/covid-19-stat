@@ -1,0 +1,41 @@
+/*
+ * Cubesviewer sites CSS
+ * This file must not be included needed if you are embedding cubesviewer in your site, as it
+ * contains global CSS selectors.
+ */
+<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+
+html {
+    font-size: 13px;
+    font-family: Open Sans;
+}
+
+img.cv-logo {
+	margin: 0px;
+	height: 60px;
+	width: 60px;
+}
+
+.header h1 {
+	margin-bottom: 5px;
+    font-family: Open Sans;
+}
+
+#cubesviewer {
+    margin-top: 10px;
+    font-family: Open Sans;
+}
+
+.cv-gui-panel {
+    font-family: Open Sans;
+    /* 
+    position: fixed;
+    border-bottom: 2px solid black;
+    background-color: #ffffff;
+    left: 0px;
+    right: 0px;
+    padding: 3px 5px 3px 5px;
+    margin-bottom: 10px;
+    */
+
+}
