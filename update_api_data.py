@@ -1,11 +1,13 @@
 import requests
 import pandas as pd
 import numpy as np
-import SQL as SQL
-import CovidApi
+from environs import Env
+import FlaskApp.SQL as SQL
+import FlaskApp.CovidApi as CovidApi
 import json
 
-
+env = Env()
+env.read_env()
 def read_params(fn):
     d = {}
     with open(fn, "r", encoding="utf-8") as file:
@@ -13,9 +15,13 @@ def read_params(fn):
 
     return d
 
-settings = read_params("credentials.json")
+try:
+    settings = read_params("credentials.json")
+except:
+    settings = read_params("FlaskApp/credentials.json")
+    
 def run():
-    sql = SQL.SQLWorker(settings, db="mysql", type_sql="mysql", ssh=False)
+    sql = SQL.SQLWorker(env.str("DB_CONN_STR"))
     covid_api = CovidApi.CovidApi(settings, sql)
     covid_api.getWorldStat()
     stat1 = covid_api.GetStatAllCountry1()
