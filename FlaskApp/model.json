@@ -17,6 +17,22 @@
       "label": "url"
     },
     {
+      "name": "type",
+      "label": "type"
+    },
+    {
+      "name": "agg_type",
+      "label": "agg_type"
+    },  
+    {
+      "name": "value",
+      "label": "value"
+    },
+    {
+      "name": "statistic_taken_at",
+      "label": "Дата обновления статистики"
+    },
+    {
       "comment": "This is used as a template for other date dimensions.",
       "name": "date",
       "label": "День баланса",
@@ -45,6 +61,17 @@
           ]
         },
         {
+          "name": "week",
+          "label": "Week",
+          "role": "week",
+          "attributes": [
+            {
+              "name": "week",
+              "order": "asc"
+            }
+          ]
+        },
+        {
           "name": "day",
           "label": "Day",
           "role": "day",
@@ -63,6 +90,14 @@
             "year",
             "month",
             "day"
+          ]
+        },
+        {
+          "name": "weekly",
+          "label": "Weekly",
+          "levels": [
+            "year",
+            "week"
           ]
         }
       ]
@@ -112,35 +147,55 @@
       ],
       "aggregates": [
         {
-          "name": "Случаев(всего)_",
+          "name": "casetotal_max",
+          "label":"Случаев всего peak",    
           "function": "max",
           "measure": "casetotal"
         },
         {
-          "name": "Умерло(всего)_",
+          "name":  "casetotal_sum",
+          "label":"Случаев всего",  
+          "function": "sum",
+          "measure": "casetotal"
+        },
+        {
+          "name": "deathcase_max",
+          "label":"Умерло всего",   
           "function": "max",
           "measure": "deathcase"
-        },  
+        },
         {
-          "name": "Новый случаев_",
+          "name": "newcase_sum",
+          "label":"Новых случаев",   
           "function": "sum",
           "measure": "newcase"
         },
         {
-          "name": "Вылечилось(всего)_",
+          "name": "curecase_max",
+          "label":"Вылечилось всего peak",   
           "function": "max",
           "measure": "curecase"
         },
         {
-          "name": "Вылечилось новых_",
+          "name": "newcure_sum",
+          "label":"Вылечилось новых",   
           "function": "sum",
           "measure": "newcure"
         },
         {
-          "name": "Новых умерло_",
+          "name": "newdeath_sum",
+          "label":"Умерло новых",  
           "function": "sum",
           "measure": "newdeath"
-        }
+        },
+        {
+          "name": "Доля умерших %",
+          "expression": "newdeath_sum/newcase_sum*100"
+        },
+        {
+          "name": "Доля вылечившихся %",
+          "expression": "newcure_sum/newcase_sum*100"
+        }  
       ],
       "joins": [
         {
@@ -180,9 +235,136 @@
           "column": "date_week"
         },
         "url": "countries.url",
-        "alpha_2": "countries.alpha_2",  
-        "alpha_3": "countries.alpha_3"    
+        "alpha_2": "countries.alpha_2",
+        "alpha_3": "countries.alpha_3"
       }
+    },
+    {
+      "name": "epidemic_country_data_pivot",
+      "dimensions": [
+        "country",
+        "alpha_2",
+        "alpha_3",
+        "url",
+        "type",
+        "agg_type",  
+        "date_balance"
+      ],
+      "measures": [
+        {
+          "name": "value",
+          "label": "value"
+        }
+      ],
+      "aggregates": [
+        {
+          "name": "value_sum",
+          "label": "Сумма",  
+          "function": "sum",
+          "measure": "value"
+        },
+        {
+          "name": "value_max",
+          "label": "Максимум",  
+          "function": "max",
+          "measure": "value"
+        }  
+      ],
+      "joins": [
+        {
+          "master": "epidemic_country_data_pivot.day",
+          "detail": {
+            "table": "dates",
+            "column": "day"
+          }
+        },
+        {
+          "master": "epidemic_country_data_pivot.id_country",
+          "detail": {
+            "table": "countries",
+            "column": "id"
+          }
+        }
+      ],
+      "mappings": {
+        "date_balance.day": {
+          "table": "dates",
+          "column": "date_day"
+        },
+        "date_balance.year": {
+          "table": "dates",
+          "column": "date_year"
+        },
+        "date_balance.quarter": {
+          "table": "dates",
+          "column": "date_quarter"
+        },
+        "date_balance.month": {
+          "table": "dates",
+          "column": "date_month"
+        },
+        "date_balance.week": {
+          "table": "dates",
+          "column": "date_week"
+        },
+        "url": "countries.url",
+        "alpha_2": "countries.alpha_2",
+        "alpha_3": "countries.alpha_3"
+      }
+    },
+    {
+      "name": "world_epidemic_country_data",
+      "dimensions": ["statistic_taken_at"],
+      "measures": [
+        {
+          "name": "casetotal",
+          "label": "casetotal"
+        },
+        {
+          "name": "deathcase",
+          "label": "deathcase"
+        },
+        {
+          "name": "curecase",
+          "label": "curecase"
+        },
+        {
+          "name": "newcase",
+          "label": "newcase"
+        },
+        {
+          "name": "newdeath",
+          "label": "newdeath"
+        }
+      ],
+      "aggregates": [
+        {
+          "name": "casetotal_sum",
+          "label": "Заражено",  
+          "function": "sum",
+          "measure": "casetotal"
+        },
+        {
+          "name": "deathcase_sum",
+          "label": "Умерло",  
+          "function": "sum",
+          "measure": "deathcase"
+        },
+        {
+          "name": "curecase_sum",
+          "label": "Вылечилось",   
+          "function": "sum",
+          "measure": "curecase"
+        },
+        {
+          "name": "% умерших",
+          "expression": "deathcase_sum/casetotal_sum*100"
+        },
+        {
+          "name": "% вылечившихся",
+          "expression": "curecase_sum/casetotal_sum*100"
+        }    
+      ]
     }
   ]
 }

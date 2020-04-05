@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
 <head>
 
-    <title>CubesViewer Studio (Local)</title>
+    <title>covid-19-stat</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="icon" type="image/png" href="img/favicon/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="img/favicon/favicon-194x194.png" sizes="194x194">
-    <link rel="icon" type="image/png" href="img/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='png/covid-19.png') }}"  sizes="32x32">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='png/covid-19.png') }}" sizes="194x194">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='png/covid-19.png') }}"  sizes="96x96">
     <link rel="shortcut icon" href="img/favicon/favicon.ico">
     
 
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='dist/cubesviewer.css') }}" />
     <link rel="stylesheet" href="{{url_for('static', filename='lib/bootstrap-submenu/css/bootstrap-submenu.css') }}" />
 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/cvapp.css') }}" />
+   <link rel="stylesheet" href="{{url_for('static', filename='css/cvapp.css') }}" />
 
     <script src="{{url_for('static', filename='lib/jquery/jquery.js') }}"></script>
     <script src="{{url_for('static', filename='lib/bootstrap/bootstrap.js') }}"></script>
@@ -49,42 +49,150 @@
         cubesviewerStudio.init({
         	cubesUrl: cubesUrl,
             container: $('#cubesviewer').get(0),
-            debug: true
+            //debug: true
         });
         
-    
-        var sort_areas = {
+        var global =  {
           "mode": "explore",
           "drilldown": [
-            "country"
+            "statistic_taken_at"
           ],
           "cuts": [],
           "datefilters": [],
-          "columnHide": {
-            "Новый случаев_": true,
-            "Вылечилось новых_": true,
-            "Новых умерло_": true
-          },
-          "columnWidths": {
-            "Вылечилось(всего)_": 249,
-            "Случаев(всего)_": 229,
-            "Умерло(всего)_": 222
-          },
-          "columnSort": {
-            "explore": {
-              "Новый случаев_": {
-                "direction": "desc",
-                "priority": 1
-              }
-            }
-          },
-          "cubename": "epidemic_country_data",
-          "name": "Most infected countries"
+          "columnHide": {},
+          "columnWidths": {},
+          "columnSort": {},
+          "cubename": "world_epidemic_country_data",
+          "name": "Общие цифры в мире"
         }
 
+        
+        var sort_areas = 
+          {
+              "mode": "explore",
+              "drilldown": [
+                "country"
+              ],
+              "cuts": [],
+              "datefilters": [],
+              "columnHide": {
+                "casetotal_sum": true,
+                "newcase_sum": true,
+                "newcure_sum": true,
+                "newdeath_sum": true
+              },
+              "columnWidths": {},
+              "columnSort": {
+                "explore": {
+                  "casetotal_max": {
+                    "direction": "desc",
+                    "priority": 0
+                  }
+                }
+              },
+              "cubename": "epidemic_country_data",
+              "name": "Самые зараженные страны"
+        }
+        
+        var plot_share = 
+        {
+              "charttype": "lines-stacked",
+              "chartoptions": {
+                "showLegend": true
+              },
+              "mode": "chart",
+              "drilldown": [
+                "type"
+              ],
+              "cuts": [
+                   {
+                  "dimension": "agg_type",
+                  "value": "0",
+                  "invert": null
+                }
+              ],
+              "datefilters": [],
+              "columnHide": {},
+              "columnWidths": {},
+              "columnSort": {},
+              "cubename": "epidemic_country_data_pivot",
+              "name": "Статистика излечившихся/умерших/активных",
+              "xaxis": "date_balance@by_date:day",
+              "yaxis": "value_sum",
+              "chart-barsvertical-stacked": true,
+              "chart-disabledseries": {
+                "key": "type",
+                "disabled": {
+                  "ACTIVE CASES": false,
+                  "ACTIVE CASES NEW": true,
+                  "CASES TOTAL": true,
+                  "DEATH CASES": false,
+                  "DEATH CASES NEW": true,
+                  "NEW CASES": true,
+                  "RECOVER CASES": false,
+                  "RECOVER CASES NEW": true
+                }
+              },
+              "chart-stackedarea-style": "expand"
+            }
+       
+        var plot_share_country =  {
+              "charttype": "lines-stacked",
+              "chartoptions": {
+                "showLegend": true
+              },
+              "mode": "chart",
+              "drilldown": [
+                "type"
+              ],
+              "cuts": [
+                {
+                  "dimension": "country:country",
+                  "value": "Russian Federation",
+                  "invert": null
+                },
+                {
+                  "dimension": "agg_type",
+                  "value": "0",
+                  "invert": null
+                }  
+              ],
+              "datefilters": [],
+              "columnHide": {},
+              "columnWidths": {},
+              "columnSort": {},
+              "cubename": "epidemic_country_data_pivot",
+              "name": "Статистика излечившихся/умерших/активных для определенной страны",
+              "xaxis": "date_balance@by_date:day",
+              "yaxis": "value_sum",
+              "chart-barsvertical-stacked": true,
+              "chart-disabledseries": {
+                "key": "type",
+                "disabled": {
+                  "ACTIVE CASES": false,
+                  "ACTIVE CASES NEW": true,
+                  "CASES TOTAL": true,
+                  "DEATH CASES": false,
+                  "DEATH CASES NEW": true,
+                  "NEW CASES": true,
+                  "RECOVER CASES": false,
+                  "RECOVER CASES NEW": true
+                }
+              },
+              "chart-stackedarea-style": "expand"
+            }
+        
+        
+
         cubesviewer.apply(function() {
+            var serialized0 = JSON.stringify(global);
             var serialized = JSON.stringify(sort_areas);
+            var serialized1 = JSON.stringify(plot_share);
+            var serialized2 = JSON.stringify(plot_share_country);
+            var view0 = cubesviewerStudio.studioViewsService.addViewObject(serialized0);
             var view1 = cubesviewerStudio.studioViewsService.addViewObject(serialized);
+            var view2 = cubesviewerStudio.studioViewsService.addViewObject(serialized1);
+            var view3 = cubesviewerStudio.studioViewsService.addViewObject(serialized2);
             cubesviewerStudio.studioViewsService.studioScope.toggleTwoColumn();
             cubesviewerStudio.studioViewsService.studioScope.toggleHideControls();
 
@@ -103,7 +211,7 @@
             <img class="cv-logo" title="Coronovirus cube statistics" src="{{url_for('static', filename='png/covid-19.png') }}" />
         </div>
 
-        <h1 style="font-family:Open+Sans;color:red;font-size:4em font-weight:bolder">Coronovirus cube statistics</h1>
+        <h1 style="font-family:Open+Sans;color:red;font-size:4em font-weight:bolder">сovid-19 cube statistics</h1>
        
     </div>
 

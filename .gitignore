@@ -1,6 +1,9 @@
 .idea/
 .ipynb_checkpoints/
 .DS_Store
+coronas.ipynb
+.zip
+.tar.gz
 __pycache__/
 test.*
 build/

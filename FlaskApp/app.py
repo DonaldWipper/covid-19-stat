@@ -22,7 +22,7 @@ def read_config_local(config_path, path=""):
     env = Env()
     env.read_env()
     fin = open(config_path, "r")
-    x = fin.read().format(DB_CONN_STR =env.str("DB_CONN_STR"), MODEL_PATH=path + env.str("MODEL_PATH")) 
+    x = fin.read().format(DB_CONN_STR =env.str("DB_CONN_STR"), MODEL_PATH=path + "/" + env.str("MODEL_PATH")) 
     fin.close()
     buf = io.StringIO(x)
     config = configparser.ConfigParser()
@@ -60,20 +60,20 @@ except KeyError:
 #app.config.from_object(__name__)
 #config = read_slicer_config(CONFIG_PATH)
 #config = read_config_local(CONFIG_PATH)                          
-app = create_server_(config)
-app.config['TEMPLATES_AUTO_RELOAD']=True
+application = create_server_(config)
+application.config['TEMPLATES_AUTO_RELOAD']=True
 debug = os.environ.get("SLICER_DEBUG")
 
 
 
 
-@app.route("/", methods=['GET'])
+@application.route("/", methods=['GET'])
 def main():
     return render_template("studio.html")
     
 
 if __name__ == "__main__":
     if debug and str_to_bool(debug):
-        app.debug = True
-    app.run()
+        application.debug = True
+    application.run()
 
