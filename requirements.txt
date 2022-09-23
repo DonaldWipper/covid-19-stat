@@ -16,7 +16,7 @@ oauthlib==1.0.3
 padme==1.1.1
 pexpect==4.0.1
 plainbox==0.25
-protobuf==3.5.2.post1
+protobuf==3.18.3
 ptyprocess==0.5
 pyasn1==0.4.2
 pyasn1-modules==0.2.1
